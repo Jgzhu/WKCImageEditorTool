@@ -39,18 +39,23 @@ typedef NS_ENUM(NSInteger,WKCImageEditorToolType) {
 
 @protocol WKCImageEditorToolDelegate<NSObject>
 
+@optional
 /**
- *编辑中的图片 - 展示效果用
+ *编辑中的图片 - 展示效果用(滤镜、旋转、亮度模式有效)
  */
 - (void)imageEditorTool:(WKCImageEditorTool *)tool
            editingImage:(UIImage *)editing;
-
 /**
  *编辑确认的图片
  */
 - (void)imageEditorTool:(WKCImageEditorTool *)tool
      editedImage:(UIImage *)edited;
 
+/**
+ *彻底取消 - 回调原始图
+ */
+- (void)imageEditorTool:(WKCImageEditorTool *)tool
+            cancelImage:(UIImage *)cancel;
 @end
 
 @interface WKCImageEditorTool : UIView
@@ -115,4 +120,20 @@ typedef NS_ENUM(NSInteger,WKCImageEditorToolType) {
 - (void)cancel;
 
 
+#pragma mark ---<其他辅助方法>---
+
+/**保存到图库*/
++ (void)saveImage:(UIImage *)image
+ completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
+
+/**截屏 - 视图*/
++ (UIImage *)captureView:(UIView *)view
+                  isSave:(BOOL)save
+        completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
+
+/**截屏 - 源图范围内*/
++ (UIImage *)captureRect:(CGRect)rect
+               fullImage:(UIImage *)full
+                  isSave:(BOOL)save
+        completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
 @end

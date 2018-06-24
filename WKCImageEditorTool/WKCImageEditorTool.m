@@ -7,9 +7,11 @@
 //
 
 #import "WKCImageEditorTool.h"
+#import "WKCCaptureTool.h"
 
 @interface WKCImageEditorTool()<WKCFilterToolDelegate,WKCRotationToolDelegate,WKCDrawToolDelegate,WKCStickersToolDelegate,WKCMosaicToolDelegate,WKCTextToolDelegate,WKCBrightToolDelegate,WKCClipToolDelegate> {
-    UIImage *_tmpImage;
+    UIImage *_tmpEditing;
+    UIImage *_tmpEdited;
     BOOL _isEdited;
     
     UIImage *_stickerImage;
@@ -78,12 +80,14 @@
     switch (self.editorType) {
         case WKCImageEditorToolTypeFilter:
         {
-            [self.filterTool callBack];
+            [self.filterTool fireOn];
+            [self.filterTool callBackEditing];
         }
             break;
         case WKCImageEditorToolTypeRotation:
         {
-            [self.rotationTool callBack];
+            [self.rotationTool fireOn];
+            [self.rotationTool callBackEditing];
         }
             break;
         case WKCImageEditorToolTypeDraw:
@@ -99,7 +103,6 @@
         case WKCImageEditorToolTypeMosaic:
         {
             [self.mosaicTool fireOn];
-            [self.mosaicTool refreshOrigin:_tmpImage];
         }
             break;
         case WKCImageEditorToolTypeText:
@@ -110,14 +113,12 @@
         case WKCImageEditorToolTypeBright:
         {
             [self.brightTool fireOn];
-            [self.brightTool refreshOrigin:_tmpImage];
-            [self.brightTool callBack];
+            [self.brightTool callBackEditing];
         }
             break;
         case WKCImageEditorToolTypeClip:
         {
             [self.clipTool fireOn];
-            [self.clipTool refreshOrigin:_tmpImage];
         }
             break;
         default:
@@ -130,48 +131,42 @@
     switch (self.editorType) {
         case WKCImageEditorToolTypeFilter:
         {
-            [self.filterTool callBack];
+            [self.filterTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeRotation:
         {
-            [self.rotationTool callBack];
+            [self.rotationTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeDraw:
         {
-            [self.drawTool callBack];
-            [self.drawTool fireOff];
+            [self.drawTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeSticker:
         {
-            [self.stickerTool fireOff];
-            [self.stickerTool callBack];
+            [self.stickerTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeMosaic:
         {
-            [self.mosaicTool callBack];
-            [self.mosaicTool fireOff];
+            [self.mosaicTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeText:
         {
-            [self.textTool fireOff];
-            [self.textTool callBack];
+            [self.textTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeBright:
         {
-            [self.brightTool callBack];
-            [self.brightTool fireOff];
+            [self.brightTool callBackEdited];
         }
             break;
         case WKCImageEditorToolTypeClip:
         {
-            [self.clipTool callBack];
-            [self.clipTool fireOff];
+            [self.clipTool callBackEdited];
         }
             break;
         default:
@@ -179,11 +174,40 @@
     }
     self.hidden = YES;
     [self refreshTools];
+    [self refreshToolsOriginImage];
 }
 
 - (void)cancel {
     self.hidden = YES;
     [self refreshTools];
+    [self postCancel];
+}
+
++ (void)saveImage:(UIImage *)image
+ completionHandle:(void (^)(BOOL, NSError *))handle {
+    return [WKCCaptureTool
+            saveImage:image
+            completionHandle:handle];
+}
+
++ (UIImage *)captureView:(UIView *)view
+                  isSave:(BOOL)save
+        completionHandle:(void (^)(BOOL, NSError *))handle {
+    return [WKCCaptureTool
+            captureView:view
+            isSave:save
+            completionHandle:handle];
+}
+
++ (UIImage *)captureRect:(CGRect)rect
+               fullImage:(UIImage *)full
+                  isSave:(BOOL)save
+        completionHandle:(void (^)(BOOL, NSError *))handle {
+    return [WKCCaptureTool
+            captureRect:rect
+            fullImage:full
+            isSave:save
+            completionHandle:handle];
 }
 
 #pragma mark ---<PrivateMethod>---
@@ -203,91 +227,127 @@
     [self addSubview:self.mosaicTool];
     [self addSubview:self.brightTool];
     [self addSubview:self.clipTool];
-    if (_stickerDelete && _stickerImage) [self addSubview:self.stickerTool];
-    if (_textDelete) [self addSubview:self.textTool];
+    [self addSubview:self.stickerTool];
+    [self addSubview:self.textTool];
 }
 
 - (void)refreshTools {
-    self.filterTool = nil;
-    self.rotationTool = nil;
+    [self.filterTool fireOff];
+    [self.rotationTool fireOff];
     [self.drawTool fireOff];
     [self.stickerTool fireOff];
     [self.mosaicTool fireOff];
-    [self.textTool cleanUp];
+    [self.textTool fireOff];
     [self.brightTool fireOff];
     [self.clipTool fireOff];
+}
+
+- (void)refreshToolsOriginImage {
+    [self.filterTool refreshOrigin:_tmpEdited];
+    [self.rotationTool refreshOrigin:_tmpEdited];
+    [self.mosaicTool refreshOrigin:_tmpEdited];
+    [self.clipTool refreshOrigin:_tmpEdited];
+    [self.brightTool refreshOrigin:_tmpEdited];
+    _tmpEditing = _tmpEdited;
 }
 
 - (void)didMoveToSuperview {
     self.superview.userInteractionEnabled = YES;
 }
 
-- (void)handleWithStateWithFinal:(UIImage *)finalImage {
-    _tmpImage = finalImage;
-    if (!_isEdited) {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(imageEditorTool:editingImage:)]) {
-            [self.delegate imageEditorTool:self editingImage:_tmpImage];
-        }
-    }else {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(imageEditorTool:editedImage:)]) {
-            [self.delegate  imageEditorTool:self editedImage:_tmpImage];
-        }
-        _isEdited = NO;
+- (void)postCancel {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(imageEditorTool:cancelImage:)]) {
+        [self.delegate imageEditorTool:self cancelImage:self.sourceImage];
+    }
+}
+
+- (void)postEditing {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(imageEditorTool:editingImage:)]) {
+        [self.delegate imageEditorTool:self editingImage:_tmpEditing];
+    }
+}
+
+- (void)postEdited {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(imageEditorTool:editedImage:)]) {
+        [self.delegate  imageEditorTool:self editedImage:_tmpEdited];
     }
 }
 
 #pragma mark ---<Delegates>---
 
+- (void)filterTool:(WKCFilterTool *)tool editingImage:(UIImage *)image {
+    _tmpEditing = image;
+    [self postEditing];
+}
+
 - (void)filterTool:(WKCFilterTool *)tool
 didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
+}
+
+- (void)rotationTool:(WKCRotationTool *)tool editingImage:(UIImage *)editing {
+    _tmpEditing = editing;
+    [self postEditing];
 }
 
 - (void)rotationTool:(WKCRotationTool *)tool
   didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
 }
 
 - (void)drawTool:(WKCDrawTool *)tool
 didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
 }
 
 - (void)stickerTool:(WKCStickersTool *)tool
  didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
 }
 
 - (void)mosaicTool:(WKCMosaicTool *)tool
 didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
 }
 
 - (void)textTool:(WKCTextTool *)tool
 didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
+}
+
+- (void)brightTool:(WKCBrightTool *)tool editingImage:(UIImage *)editing {
+    _tmpEditing = editing;
+    [self postEditing];
 }
 
 - (void)brightTool:(WKCBrightTool *)tool didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
 }
 
 - (void)clipTool:(WKCClipTool *)tool didFinishEditImage:(UIImage *)finalImage {
-    [self handleWithStateWithFinal:finalImage];
+    _tmpEdited = finalImage;
+    [self postEdited];
 }
 
 #pragma mark ---<Setter>---
 
 - (void)setSourceImage:(UIImage *)sourceImage {
     _sourceImage = sourceImage;
-    _tmpImage = sourceImage;
+    _tmpEdited = sourceImage;
 }
 
 #pragma mark ---<Lazy init>---
 
 - (WKCFilterTool *)filterTool {
     if (!_filterTool) {
-        _filterTool = [[WKCFilterTool alloc] initWithFrame:self.bounds originImage:_tmpImage];
+        _filterTool = [[WKCFilterTool alloc] initWithFrame:self.bounds originImage:_tmpEdited];
         _filterTool.delegate = self;
     }
     return _filterTool;
@@ -295,7 +355,7 @@ didFinishEditImage:(UIImage *)finalImage {
 
 - (WKCRotationTool *)rotationTool {
     if (!_rotationTool) {
-        _rotationTool = [[WKCRotationTool alloc] initWithFrame:self.bounds originImage:_tmpImage];
+        _rotationTool = [[WKCRotationTool alloc] initWithFrame:self.bounds originImage:_tmpEdited];
         _rotationTool.delegate = self;
     }
     return _rotationTool;
@@ -319,7 +379,7 @@ didFinishEditImage:(UIImage *)finalImage {
 
 - (WKCMosaicTool *)mosaicTool {
     if (!_mosaicTool) {
-        _mosaicTool = [[WKCMosaicTool alloc] initWithFrame:self.bounds image:_tmpImage];
+        _mosaicTool = [[WKCMosaicTool alloc] initWithFrame:self.bounds image:_tmpEdited];
         _mosaicTool.delegate = self;
     }
     return _mosaicTool;
@@ -335,7 +395,7 @@ didFinishEditImage:(UIImage *)finalImage {
 
 - (WKCBrightTool *)brightTool {
     if (!_brightTool) {
-        _brightTool = [[WKCBrightTool alloc] initWithFrame:self.bounds originImage:_tmpImage];
+        _brightTool = [[WKCBrightTool alloc] initWithFrame:self.bounds originImage:_tmpEdited];
          _brightTool.delegate = self;
     }
     return _brightTool;
@@ -343,7 +403,7 @@ didFinishEditImage:(UIImage *)finalImage {
 
 - (WKCClipTool *)clipTool {
     if (!_clipTool) {
-        _clipTool = [[WKCClipTool alloc] initWithFrame:self.bounds originImage:_tmpImage];
+        _clipTool = [[WKCClipTool alloc] initWithFrame:self.bounds originImage:_tmpEdited];
         _clipTool.delegate = self;
     }
     return _clipTool;

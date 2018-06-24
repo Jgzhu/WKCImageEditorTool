@@ -35,9 +35,7 @@ didFinishEditImage:(UIImage *)finalImage;
 /**圆角 - 默认4*/
 @property (nonatomic, assign) CGFloat cornerRadius;
 
-/**
- *初始化
- */
+/**初始化*/
 - (instancetype)initWithFrame:(CGRect)frame
                   deleteImage:(UIImage *)dImage;
 
@@ -46,7 +44,6 @@ didFinishEditImage:(UIImage *)finalImage;
 /**关闭*/
 - (void)fireOff;
 /**代理回调*/
-- (void)callBack;
-/**清除*/
-- (void)cleanUp;
+- (void)callBackEdited;
+
 @end

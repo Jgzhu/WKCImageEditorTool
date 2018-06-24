@@ -28,9 +28,7 @@
 /**边框宽度 - 默认2*/
 @property (nonatomic, assign) CGFloat borderWidth;
 
-/**
- *初始化
- */
+/**初始化*/
 - (instancetype)initWithFrame:(CGRect)frame
                  stickerImage:(UIImage *)sticker
                   deleteImage:(UIImage *)dImage;
@@ -42,6 +40,6 @@
 /**关闭*/
 - (void)fireOff;
 /**代理回调*/
-- (void)callBack;
+- (void)callBackEdited;
 
 @end

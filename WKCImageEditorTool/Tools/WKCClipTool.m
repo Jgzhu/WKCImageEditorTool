@@ -12,7 +12,6 @@
 #import "WKCCaptureTool.h"
 
 @interface WKCClipBall:UIView
-
 /**球颜色*/
 @property (nonatomic, strong) UIColor * ballColor;
 
@@ -45,7 +44,6 @@
 
 /**网格layer*/
 @interface WKCClipGirdLayer:CALayer
-
 @property (nonatomic, assign) CGRect clippingRect; //裁剪范围
 @property (nonatomic, strong) UIColor *bgColor;    //背景颜色
 @property (nonatomic, strong) UIColor *gridColor;  //线条颜色
@@ -53,7 +51,8 @@
 @end
 
 @implementation WKCClipGirdLayer
-- (void)drawInContext:(CGContextRef)context {
+- (void)drawInContext:(CGContextRef)context
+{
     CGRect rct = self.bounds;
     CGContextSetFillColorWithColor(context, self.bgColor.CGColor);
     CGContextFillRect(context, rct);
@@ -96,7 +95,6 @@ static const NSUInteger kRightBottomCircleView = 4;
 @interface WKCClipGridItem:UIView
 
 @property (nonatomic, assign) CGRect clippingRect;  //裁剪范围
-
 
 /**清除线球*/
 - (void)cleanUp;
@@ -350,10 +348,8 @@ static const NSUInteger kRightBottomCircleView = 4;
 @end
 
 @interface WKCClipTool()
-
 @property (nonatomic, strong) WKCClipGridItem * gridView;
 @property (nonatomic, strong) UIImage * image;
-
 @end
 
 @implementation WKCClipTool
@@ -371,6 +367,7 @@ static const NSUInteger kRightBottomCircleView = 4;
 }
 
 - (void)fireOn {
+    self.gridView.clippingRect = self.bounds;
     self.hidden = NO;
 }
 
@@ -378,8 +375,8 @@ static const NSUInteger kRightBottomCircleView = 4;
     self.hidden = YES;
 }
 
-- (void)callBack {
-
+- (void)callBackEdited {
+    
     UIImage *image = [WKCCaptureTool captureRect:self.gridView.clippingRect fullImage:self.image isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
        [self fireOff];
     }];
@@ -402,6 +399,10 @@ static const NSUInteger kRightBottomCircleView = 4;
     }else {
         [self refreshScale:scale];
     }
+}
+
+- (void)cleanUp {
+    [self.gridView cleanUp];
 }
 
 - (void)setGridColor:(UIColor *)gridColor {

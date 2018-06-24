@@ -33,6 +33,11 @@ typedef NS_ENUM(NSInteger,WKCImageRotationType) {
 
 @protocol WKCRotationToolDelegate<NSObject>
 
+@optional
+
+- (void)rotationTool:(WKCRotationTool *)tool
+        editingImage:(UIImage *)editing;
+
 - (void)rotationTool:(WKCRotationTool *)tool
   didFinishEditImage:(UIImage *)finalImage;
 
@@ -47,13 +52,18 @@ typedef NS_ENUM(NSInteger,WKCImageRotationType) {
 /**值 - 只在角度和弧度旋转下有效*/
 @property (nonatomic, assign) CGFloat value;
 
-/**
- *初始化 - 默认fireOn
- */
+/**初始化 - 90度逆时针*/
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 
-/**回调*/
-- (void)callBack;
-
+/**刷新源图*/
+- (void)refreshOrigin:(UIImage *)origin;
+/**开启*/
+- (void)fireOn;
+/**关闭*/
+- (void)fireOff;
+/**回调正在编辑*/
+- (void)callBackEditing;
+/**回调编辑完的*/
+- (void)callBackEdited;
 @end

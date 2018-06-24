@@ -56,6 +56,7 @@
 }
 
 - (void)fireOn {
+    [self cleanUp];
     self.hidden = NO;
 }
 
@@ -63,7 +64,7 @@
     self.hidden = YES;
 }
 
-- (void)callBack {
+- (void)callBackEdited {
     
     UIImage *image = [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
       
@@ -76,6 +77,7 @@
 
 - (void)cleanUp {
     _tmpImage = nil;
+    _content = nil;
     [self setNeedsDisplay];
 }
 

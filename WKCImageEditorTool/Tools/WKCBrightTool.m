@@ -70,11 +70,21 @@
     self.superview.userInteractionEnabled = YES;
 }
 
-- (void)callBack {
-    
+- (void)callBackEditing {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(brightTool:editingImage:)]) {
+        [self.delegate brightTool:self editingImage:_tmpImage];
+    }
+}
+
+- (void)callBackEdited {
     if (self.delegate && [self.delegate respondsToSelector:@selector(brightTool:didFinishEditImage:)]) {
         [self.delegate brightTool:self didFinishEditImage:_tmpImage];
     }
+}
+
+- (void)callBack {
+    
+
 }
 
 @end

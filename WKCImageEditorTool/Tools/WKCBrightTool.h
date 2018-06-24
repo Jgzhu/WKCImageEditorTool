@@ -22,6 +22,9 @@ typedef NS_ENUM(NSInteger,WKCBrightType) {
 @protocol WKCBrightToolDelegate<NSObject>
 
 - (void)brightTool:(WKCBrightTool *)tool
+      editingImage:(UIImage *)editing;
+
+- (void)brightTool:(WKCBrightTool *)tool
 didFinishEditImage:(UIImage *)finalImage;
 
 @end
@@ -31,9 +34,7 @@ didFinishEditImage:(UIImage *)finalImage;
 /**代理*/
 @property (nonatomic, weak) id<WKCBrightToolDelegate> delegate;
 
-/**
- *初始化
- */
+/**初始化*/
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 
@@ -42,8 +43,11 @@ didFinishEditImage:(UIImage *)finalImage;
                  value:(CGFloat)value;
 /**刷新*/
 - (void)refreshOrigin:(UIImage *)origin;
-/**代理回调*/
-- (void)callBack;
+
+/**回调正在编辑*/
+- (void)callBackEditing;
+/***/
+- (void)callBackEdited;
 /**开启*/
 - (void)fireOn;
 /**关闭*/

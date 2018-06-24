@@ -11,7 +11,6 @@
 @interface WKCRotationTool()
 
 @property (nonatomic, strong) UIImage * origin;
-
 @end
 
 @implementation WKCRotationTool
@@ -27,8 +26,9 @@
     return self;
 }
 
-- (void)callBack {
-    switch (self.rotationType) {
+- (void)setRotationType:(WKCImageRotationType)rotationType {
+    _rotationType = rotationType;
+    switch (rotationType) {
         case WKCImageRotationTypeOrientationLeft:
         {
             self.origin = [self.origin rotate:UIImageOrientationLeft];
@@ -77,13 +77,33 @@
         default:
             break;
     }
-    [self postDelegate];
 }
 
-- (void)postDelegate {
+- (void)callBackEditing {
+    [self setRotationType:self.rotationType];
+    [self callBack];
+}
+
+- (void)callBackEdited {
+    [self callBack];
+}
+
+- (void)callBack {
     if (self.delegate && [self.delegate respondsToSelector:@selector(rotationTool:didFinishEditImage:)]) {
         [self.delegate rotationTool:self didFinishEditImage:self.origin];
     }
+}
+
+- (void)fireOn {
+    self.hidden = NO;
+}
+
+- (void)fireOff {
+    self.hidden = YES;
+}
+
+- (void)refreshOrigin:(UIImage *)origin {
+    self.origin = origin;
 }
 
 @end

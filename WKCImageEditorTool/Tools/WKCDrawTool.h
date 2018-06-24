@@ -36,5 +36,5 @@
 /**关闭*/
 - (void)fireOff;
 /**代理回调*/
-- (void)callBack;
+- (void)callBackEdited;
 @end

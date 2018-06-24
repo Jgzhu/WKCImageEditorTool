@@ -267,14 +267,18 @@
 
 - (void)fireOn {
     [self.stickerItem setAcvitity:YES];
+    self.stickerItem.center = self.center;
     self.hidden = NO;
 }
 
 - (void)fireOff {
-    [self.stickerItem setAcvitity:NO];
+    self.hidden = YES;
 }
 
-- (void)callBack {
+- (void)callBackEdited {
+    
+    [self.stickerItem setAcvitity:NO];
+    
     UIImage *image = [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
         self.hidden = YES;
     }];

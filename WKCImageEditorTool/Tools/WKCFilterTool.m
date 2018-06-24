@@ -206,6 +206,27 @@
     _tmpImage = [WKCFilterManager filterWithName:fileName originImage:self.image];
 }
 
+- (void)fireOn {
+    self.hidden = NO;
+}
+
+-(void)fireOff {
+    self.hidden = YES;
+}
+
+- (void)refreshOrigin:(UIImage *)origin {
+    self.image = origin;
+    [self setFilterType:self.filterType];
+}
+
+- (void)callBackEditing {
+    [self callBack];
+}
+
+-(void)callBackEdited {
+    [self callBack];
+}
+
 - (void)callBack {
     if (self.delegate && [self.delegate respondsToSelector:@selector(filterTool:didFinishEditImage:)]) {
         [self.delegate filterTool:self didFinishEditImage:_tmpImage];

@@ -10,7 +10,6 @@
 #import "UIView+Frame.h"
 #import "WKCCaptureTool.h"
 #import "WKCFilterManager.h"
-
 @interface WKCMosaicTool()
 @property (nonatomic, strong) UIImageView *surfaceImageView;
 
@@ -41,6 +40,7 @@
 }
 
 - (void)fireOn {
+    [self cleanUp];
     self.hidden = NO;
 }
 
@@ -51,7 +51,7 @@
     self.image = origin;
 }
 
-- (void)callBack {
+- (void)callBackEdited {
     
     UIImage *image = [WKCCaptureTool captureView:self isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
         self.hidden = YES;

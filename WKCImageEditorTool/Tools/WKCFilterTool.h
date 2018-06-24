@@ -131,6 +131,11 @@ typedef NS_ENUM(NSInteger,WKCFilterType) {
 
 @protocol WKCFilterToolDelegate<NSObject>
 
+@optional
+
+- (void)filterTool:(WKCFilterTool *)tool
+      editingImage:(UIImage *)image;
+
 - (void)filterTool:(WKCFilterTool *)tool
  didFinishEditImage:(UIImage *)finalImage;
 
@@ -143,12 +148,18 @@ typedef NS_ENUM(NSInteger,WKCFilterType) {
 /**类型 - 默认怀旧*/
 @property (nonatomic, assign) WKCFilterType filterType;
 
-/**
- *初始化
- */
+/**初始化 - 默认fireOn*/
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 
-/**代理回调*/
-- (void)callBack;
+/**刷新源图*/
+- (void)refreshOrigin:(UIImage *)origin;
+/**开启*/
+- (void)fireOn;
+/**关闭*/
+- (void)fireOff;
+/**回调正在编辑*/
+- (void)callBackEditing;
+/**回调编辑完的*/
+- (void)callBackEdited;
 @end

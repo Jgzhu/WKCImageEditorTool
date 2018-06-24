@@ -24,9 +24,7 @@ didFinishEditImage:(UIImage *)finalImage;
 /**马赛克宽度*/
 @property (nonatomic,assign) CGFloat mosaicWidth;
 
-/**
- *初始化
- */
+/**初始化*/
 -(instancetype)initWithFrame:(CGRect)frame
                        image:(UIImage *)image;
 
@@ -39,7 +37,7 @@ didFinishEditImage:(UIImage *)finalImage;
 /**给整张图打马赛克*/
 - (void)fullMosaic;
 /**代理回调*/
-- (void)callBack;
+- (void)callBackEdited;
 /**清除*/
 - (void)cleanUp;
 

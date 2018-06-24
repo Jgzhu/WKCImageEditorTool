@@ -27,14 +27,13 @@ didFinishEditImage:(UIImage *)finalImage;
 /**网格背景色 -- 默认黑色*/
 @property (nonatomic, strong) UIColor * gridBgColor;
 
-/**
- *初始化
- */
+/**初始化*/
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 
 /**刷新源图*/
 - (void)refreshOrigin:(UIImage *)origin;
+
 /**刷新比例*/
 - (void)refreshScale:(CGFloat)scale
            animation:(BOOL)animation;
@@ -43,6 +42,7 @@ didFinishEditImage:(UIImage *)finalImage;
 /**关闭*/
 - (void)fireOff;
 /**代理回调*/
-- (void)callBack;
-
+- (void)callBackEdited;
+/**清除线球*/
+- (void)cleanUp;
 @end

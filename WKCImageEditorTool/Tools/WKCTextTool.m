@@ -94,17 +94,17 @@
 
 - (void)fireOn {
     [self setActivity:YES];
+    self.textItem.center = self.center;
 }
 
 - (void)fireOff {
-    [self setActivity:NO];
-}
-
-- (void)cleanUp {
     self.hidden = YES;
 }
 
-- (void)callBack {
+- (void)callBackEdited {
+    
+    [self setActivity:NO];
+    
     UIImage *finalImage = [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
         self.hidden = YES;
     }];
