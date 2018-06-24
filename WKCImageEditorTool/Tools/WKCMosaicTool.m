@@ -10,6 +10,7 @@
 #import "UIView+Frame.h"
 #import "WKCCaptureTool.h"
 #import "WKCFilterManager.h"
+
 @interface WKCMosaicTool()
 @property (nonatomic, strong) UIImageView *surfaceImageView;
 

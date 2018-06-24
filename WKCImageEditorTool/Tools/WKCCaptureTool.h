@@ -11,16 +11,22 @@
 
 @interface WKCCaptureTool : NSObject
 
-/**保存到图库*/
+/**
+ *保存到图库
+ */
 + (void)saveImage:(UIImage *)image
  completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
 
-/**截屏 - 视图*/
+/**
+ *截屏 - 视图
+ */
 + (UIImage *)captureView:(UIView *)view
                   isSave:(BOOL)save
         completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
 
-/**截屏 - 源图范围内*/
+/**
+ *截屏 - 源图范围内
+ */
 + (UIImage *)captureRect:(CGRect)rect
                fullImage:(UIImage *)full
                   isSave:(BOOL)save

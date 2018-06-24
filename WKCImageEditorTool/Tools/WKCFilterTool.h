@@ -143,7 +143,9 @@ typedef NS_ENUM(NSInteger,WKCFilterType) {
 /**类型 - 默认怀旧*/
 @property (nonatomic, assign) WKCFilterType filterType;
 
-/**初始化 - 默认fireOn*/
+/**
+ *初始化
+ */
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 

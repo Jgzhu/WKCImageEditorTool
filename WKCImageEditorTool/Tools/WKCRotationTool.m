@@ -11,6 +11,7 @@
 @interface WKCRotationTool()
 
 @property (nonatomic, strong) UIImage * origin;
+
 @end
 
 @implementation WKCRotationTool

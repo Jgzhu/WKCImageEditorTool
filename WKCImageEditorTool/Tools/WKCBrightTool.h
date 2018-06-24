@@ -31,7 +31,9 @@ didFinishEditImage:(UIImage *)finalImage;
 /**代理*/
 @property (nonatomic, weak) id<WKCBrightToolDelegate> delegate;
 
-/**初始化 - 默认fireOn*/
+/**
+ *初始化
+ */
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 

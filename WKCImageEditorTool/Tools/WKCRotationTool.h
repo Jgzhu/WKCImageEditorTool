@@ -47,7 +47,9 @@ typedef NS_ENUM(NSInteger,WKCImageRotationType) {
 /**值 - 只在角度和弧度旋转下有效*/
 @property (nonatomic, assign) CGFloat value;
 
-/**初始化 - 默认fireOn*/
+/**
+ *初始化 - 默认fireOn
+ */
 - (instancetype)initWithFrame:(CGRect)frame
                   originImage:(UIImage *)image;
 
