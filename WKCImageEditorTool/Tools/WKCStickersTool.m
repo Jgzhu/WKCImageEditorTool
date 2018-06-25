@@ -279,13 +279,23 @@
     
     [self.stickerItem setAcvitity:NO];
     
-    UIImage *image = [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
-        self.hidden = YES;
-    }];
+    __weak typeof(self)WeakSelf = self;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(stickerTool:didFinishEditImage:)]) {
-        [self.delegate stickerTool:self didFinishEditImage:image];
-    }
+    [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(UIImage *image, BOOL isSuccess, NSError *error) {
+        
+        if (isSuccess) {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(stickerTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate stickerTool:WeakSelf didFinishEditImage:image];
+            }
+        }else {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(stickerTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate stickerTool:WeakSelf didFinishEditImage:nil];
+            }
+        }
+        
+        [WeakSelf fireOff];
+    }];
+
 }
 
 - (void)refreshSticker:(UIImage *)sticker {

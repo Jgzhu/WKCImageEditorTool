@@ -53,13 +53,23 @@
 
 - (void)callBackEdited {
     
-    UIImage *image = [WKCCaptureTool captureView:self isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
-        self.hidden = YES;
-    }];
+    __weak typeof(self)WeakSelf = self;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(mosaicTool:didFinishEditImage:)]) {
-        [self.delegate mosaicTool:self didFinishEditImage:image];
-    }
+    [WKCCaptureTool captureView:self isSave:NO completionHandle:^(UIImage *image, BOOL isSuccess, NSError *error) {
+        
+        if (isSuccess) {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(mosaicTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate mosaicTool:WeakSelf didFinishEditImage:image];
+            }
+        }else {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(mosaicTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate mosaicTool:WeakSelf didFinishEditImage:nil];
+            }
+        }
+        
+        [WeakSelf fireOff];
+    }];
+
 }
 
 - (void)cleanUp {

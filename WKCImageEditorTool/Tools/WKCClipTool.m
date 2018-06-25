@@ -10,6 +10,7 @@
 #import "UIView+Frame.h"
 #import <QuartzCore/QuartzCore.h>
 #import "WKCCaptureTool.h"
+#import "WKCCache.h"
 
 @interface WKCClipBall:UIView
 /**球颜色*/
@@ -376,14 +377,23 @@ static const NSUInteger kRightBottomCircleView = 4;
 }
 
 - (void)callBackEdited {
-    
-    UIImage *image = [WKCCaptureTool captureRect:self.gridView.clippingRect fullImage:self.image isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
-       [self fireOff];
+
+    __weak typeof(self)WeakSelf = self;
+    [WKCCaptureTool captureRect:self.gridView.clippingRect fullImage:self.image isSave:NO completionHandle:^(UIImage *image, BOOL isSuccess, NSError *error) {
+        
+        if (isSuccess) {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(clipTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate clipTool:WeakSelf didFinishEditImage:image];
+            }
+        }else {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(clipTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate clipTool:WeakSelf didFinishEditImage:nil];
+            }
+        }
+        
+        [WeakSelf fireOff];
     }];
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(clipTool:didFinishEditImage:)]) {
-        [self.delegate clipTool:self didFinishEditImage:image];
-    }
+   
 }
 
 - (void)refreshOrigin:(UIImage *)origin {

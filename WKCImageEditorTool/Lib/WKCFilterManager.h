@@ -25,8 +25,8 @@
  */
 #pragma mark ----<滤镜>----
 /**滤镜*/
-+ (UIImage *)filterWithName:(NSString *)name
-                originImage:(UIImage *)image;
++ (void)filterWithName:(NSString *)name
+           originImage:(UIImage *)image completationHandle:(void(^)(UIImage *image))handle;
 
 
 #pragma mark ----<色彩>---

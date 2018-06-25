@@ -127,13 +127,13 @@ typedef NS_ENUM(NSInteger,WKCImageEditorToolType) {
  completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
 
 /**截屏 - 视图*/
-+ (UIImage *)captureView:(UIView *)view
++ (void)captureView:(UIView *)view
                   isSave:(BOOL)save
-        completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
+        completionHandle:(void(^)(UIImage *image,BOOL isSuccess,NSError *error))handle;
 
 /**截屏 - 源图范围内*/
-+ (UIImage *)captureRect:(CGRect)rect
++ (void)captureRect:(CGRect)rect
                fullImage:(UIImage *)full
                   isSave:(BOOL)save
-        completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle;
+        completionHandle:(void(^)(UIImage *image,BOOL isSuccess,NSError *error))handle;
 @end

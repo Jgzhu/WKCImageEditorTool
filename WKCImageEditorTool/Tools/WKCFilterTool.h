@@ -134,7 +134,7 @@ typedef NS_ENUM(NSInteger,WKCFilterType) {
 @optional
 
 - (void)filterTool:(WKCFilterTool *)tool
-      editingImage:(UIImage *)image;
+      editingImage:(UIImage *)editing;
 
 - (void)filterTool:(WKCFilterTool *)tool
  didFinishEditImage:(UIImage *)finalImage;
@@ -158,8 +158,7 @@ typedef NS_ENUM(NSInteger,WKCFilterType) {
 - (void)fireOn;
 /**关闭*/
 - (void)fireOff;
-/**回调正在编辑*/
-- (void)callBackEditing;
+
 /**回调编辑完的*/
 - (void)callBackEdited;
 @end

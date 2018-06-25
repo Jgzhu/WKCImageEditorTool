@@ -10,8 +10,9 @@
 #import <CoreImage/CIFilter.h>
 
 @implementation WKCFilterManager
-+ (UIImage *)filterWithName:(NSString *)name
-                originImage:(UIImage *)image {
+
++ (void)filterWithName:(NSString *)name
+                originImage:(UIImage *)image completationHandle:(void(^)(UIImage *image))handle {
     
     CIImage *ciImage =[[CIImage alloc]initWithImage:image];
     
@@ -29,7 +30,8 @@
     
     CGImageRelease(cgImage);
     
-    return newimage;
+    if (handle) handle(newimage);
+    
 }
 
 

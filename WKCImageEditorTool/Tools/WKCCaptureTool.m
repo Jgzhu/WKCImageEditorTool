@@ -21,9 +21,9 @@
     }];
 }
 
-+ (UIImage *)captureView:(UIView *)view
++ (void)captureView:(UIView *)view
                   isSave:(BOOL)save
-        completionHandle:(void(^)(BOOL isSuccess,NSError *error))handle {
+        completionHandle:(void(^)(UIImage *image,BOOL isSuccess,NSError *error))handle {
     CGRect frame = view.frame;
     UIGraphicsBeginImageContext(frame.size);
     UIGraphicsBeginImageContextWithOptions(frame.size, NO, 0.0);
@@ -33,15 +33,14 @@
     UIGraphicsEndImageContext();
     if (save) {
         [self saveImage:image completionHandle:^(BOOL isSuccess, NSError *error) {
-            handle(isSuccess, error);
+           if (handle) handle(image,isSuccess, error);
         }];
     }else {
-        handle(YES, nil);
+       if (handle) handle(image,YES, nil);
     }
-    return image;
 }
 
-+ (UIImage *)captureRect:(CGRect)rect fullImage:(UIImage *)full isSave:(BOOL)save completionHandle:(void (^)(BOOL, NSError *))handle {
++ (void)captureRect:(CGRect)rect fullImage:(UIImage *)full isSave:(BOOL)save completionHandle:(void (^)(UIImage *image,BOOL isSuccess, NSError *error))handle {
     CGFloat scale = [UIScreen mainScreen].scale;
     CGFloat x =  rect.origin.x * scale, y = rect.origin.y * scale, w = rect.size.width * scale, h = rect.size.height * scale;
     CGRect dianRect = CGRectMake(x, y, w, h);
@@ -50,12 +49,11 @@
     UIImage *newImage = [UIImage imageWithCGImage:newImageRef scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
     if (save) {
         [self saveImage:newImage completionHandle:^(BOOL isSuccess, NSError *error) {
-            handle(isSuccess, error);
+            if (handle) handle(newImage,isSuccess, error);
         }];
     }else {
-        handle(YES, nil);
+      if (handle) handle(newImage,YES, nil);
     }
-    return newImage;
 }
 
 @end

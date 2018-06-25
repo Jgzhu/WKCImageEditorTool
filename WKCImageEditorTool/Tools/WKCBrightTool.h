@@ -46,7 +46,7 @@ didFinishEditImage:(UIImage *)finalImage;
 
 /**回调正在编辑*/
 - (void)callBackEditing;
-/***/
+/**回调编辑完的*/
 - (void)callBackEdited;
 /**开启*/
 - (void)fireOn;

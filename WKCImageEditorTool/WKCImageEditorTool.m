@@ -10,15 +10,15 @@
 #import "WKCCaptureTool.h"
 
 @interface WKCImageEditorTool()<WKCFilterToolDelegate,WKCRotationToolDelegate,WKCDrawToolDelegate,WKCStickersToolDelegate,WKCMosaicToolDelegate,WKCTextToolDelegate,WKCBrightToolDelegate,WKCClipToolDelegate> {
-    UIImage *_tmpEditing;
-    UIImage *_tmpEdited;
-    BOOL _isEdited;
-    
+
     UIImage *_stickerImage;
     UIImage *_stickerDelete;
     UIImage *_textDelete;
 }
 
+@property (nonatomic, strong) UIImage * tmpEditing;
+@property (nonatomic, strong) UIImage * tmpEdited;
+@property (nonatomic, assign) BOOL  isEdited;
 @end
 
 @implementation WKCImageEditorTool
@@ -81,7 +81,6 @@
         case WKCImageEditorToolTypeFilter:
         {
             [self.filterTool fireOn];
-            [self.filterTool callBackEditing];
         }
             break;
         case WKCImageEditorToolTypeRotation:
@@ -190,19 +189,19 @@
             completionHandle:handle];
 }
 
-+ (UIImage *)captureView:(UIView *)view
++ (void)captureView:(UIView *)view
                   isSave:(BOOL)save
-        completionHandle:(void (^)(BOOL, NSError *))handle {
+        completionHandle:(void (^)(UIImage *image,BOOL isSuccess, NSError *error))handle {
     return [WKCCaptureTool
             captureView:view
             isSave:save
             completionHandle:handle];
 }
 
-+ (UIImage *)captureRect:(CGRect)rect
++ (void)captureRect:(CGRect)rect
                fullImage:(UIImage *)full
                   isSave:(BOOL)save
-        completionHandle:(void (^)(BOOL, NSError *))handle {
+        completionHandle:(void (^)(UIImage *image,BOOL isSuccess, NSError *error))handle  {
     return [WKCCaptureTool
             captureRect:rect
             fullImage:full
@@ -275,8 +274,8 @@
 
 #pragma mark ---<Delegates>---
 
-- (void)filterTool:(WKCFilterTool *)tool editingImage:(UIImage *)image {
-    _tmpEditing = image;
+- (void)filterTool:(WKCFilterTool *)tool editingImage:(UIImage *)editing {
+    _tmpEditing = editing;
     [self postEditing];
 }
 

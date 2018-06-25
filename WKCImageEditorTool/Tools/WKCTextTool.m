@@ -105,13 +105,26 @@
     
     [self setActivity:NO];
     
-    UIImage *finalImage = [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
-        self.hidden = YES;
+    
+    __weak typeof(self)WeakSelf = self;
+    
+    [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(UIImage *image, BOOL isSuccess, NSError *error) {
+        
+        if (isSuccess) {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(textTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate textTool:WeakSelf didFinishEditImage:image];
+            }
+        }else {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(textTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate textTool:WeakSelf didFinishEditImage:nil];
+            }
+        }
+       
+        [WeakSelf fireOff];
+        
     }];
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(textTool:didFinishEditImage:)]) {
-        [self.delegate textTool:self didFinishEditImage:finalImage];
-    }
+
 }
 
 #pragma mark ---<PrivateMethod>---

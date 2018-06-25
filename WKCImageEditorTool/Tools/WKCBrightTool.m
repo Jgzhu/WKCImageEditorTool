@@ -8,13 +8,13 @@
 
 #import "WKCBrightTool.h"
 #import "WKCFilterManager.h"
-
+#import "WKCCache.h"
 @interface WKCBrightTool() {
     WKCBrightType _tmpType;
     CGFloat _tmpVaule;
-    UIImage *_tmpImage;
 }
 
+@property (nonatomic, strong) UIImage * tmpImage;
 @property (nonatomic, strong) UIImage * image;
 @property (nonatomic, strong) CIFilter *filter;
 
@@ -43,19 +43,29 @@
 }
 
 - (void)brightWithType:(WKCBrightType)type value:(CGFloat)value {
-    switch (type) {
-        case WKCBrightTypeLight:
-           _tmpImage = [WKCFilterManager brightFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
-            break;
-        case WKCBrightTypeSaturation:
-           _tmpImage = [WKCFilterManager saturationFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
-            break;
-        case WKCBrightTypeContrast:
-           _tmpImage = [WKCFilterManager contrastFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
-            break;
-        default:
-            break;
-    }
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        switch (type) {
+            case WKCBrightTypeLight:
+                self.image = [WKCCache forceAnalyzeSourceImage:self.image];
+                self.tmpImage = [WKCFilterManager brightFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
+                self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
+                break;
+            case WKCBrightTypeSaturation:
+                 self.image = [WKCCache forceAnalyzeSourceImage:self.image];
+                self.tmpImage = [WKCFilterManager saturationFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
+                 self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
+                break;
+            case WKCBrightTypeContrast:
+                self.image = [WKCCache forceAnalyzeSourceImage:self.image];
+                self.tmpImage = [WKCFilterManager contrastFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
+                self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
+                break;
+            default:
+                break;
+        }
+    });
+
     _tmpType = type;
     _tmpVaule = value;
     
@@ -71,20 +81,19 @@
 }
 
 - (void)callBackEditing {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(brightTool:editingImage:)]) {
-        [self.delegate brightTool:self editingImage:_tmpImage];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(brightTool:editingImage:)]) {
+            [self.delegate brightTool:self editingImage:self.tmpImage];
+        }
+    });
 }
 
 - (void)callBackEdited {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(brightTool:didFinishEditImage:)]) {
-        [self.delegate brightTool:self didFinishEditImage:_tmpImage];
-    }
-}
-
-- (void)callBack {
-    
-
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(brightTool:didFinishEditImage:)]) {
+            [self.delegate brightTool:self didFinishEditImage:self.tmpImage];
+        }
+    });
 }
 
 @end

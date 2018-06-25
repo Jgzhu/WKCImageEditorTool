@@ -8,13 +8,13 @@
 
 #import "WKCFilterTool.h"
 #import "WKCFilterManager.h"
+#import "WKCCache.h"
 
-@interface WKCFilterTool(){
-    UIImage *_tmpImage;
-}
+@interface WKCFilterTool()
 
+@property (nonatomic, copy) NSString * fileName;
 @property (nonatomic, strong) UIImage * image;
-
+@property (nonatomic, strong) UIImage * tmpImage;
 @end
 
 @implementation WKCFilterTool
@@ -24,7 +24,6 @@
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
         self.image = image;
-        self.filterType = WKCFilterTypeInstant;
         self.hidden = YES;
     }
     return self;
@@ -32,178 +31,197 @@
 
 - (void)setFilterType:(WKCFilterType)filterType {
     _filterType = filterType;
-    NSString *fileName = nil;
+
     switch (filterType) {
         case WKCFilterTypeFade:
-            fileName = @"CIPhotoEffectFade";
+            self.fileName = @"CIPhotoEffectFade";
             break;
         case WKCFilterTypeMono:
-            fileName = @"CIPhotoEffectMono";
+            self.fileName = @"CIPhotoEffectMono";
             break;
         case WKCFilterTypeNoir:
-            fileName = @"CIPhotoEffectNoir";
+            self.fileName = @"CIPhotoEffectNoir";
             break;
         case WKCFilterTypeTonal:
-            fileName = @"CIPhotoEffectTonal";
+            self.fileName = @"CIPhotoEffectTonal";
             break;
         case WKCFilterTypeChrome:
-            fileName = @"CIPhotoEffectChrome";
+            self.fileName = @"CIPhotoEffectChrome";
             break;
         case WKCFilterTypeInstant:
-            fileName = @"CIPhotoEffectInstant";
+            self.fileName = @"CIPhotoEffectInstant";
             break;
         case WKCFilterTypeProcess:
-            fileName = @"CIPhotoEffectProcess";
+            self.fileName = @"CIPhotoEffectProcess";
             break;
         case WKCFilterTypeTransfer:
-            fileName = @"CIPhotoEffectTransfer";
+            self.fileName = @"CIPhotoEffectTransfer";
             break;
         case WKCFilterTypeSepiaTone:
-            fileName = @"CISepiaTone";
+            self.fileName = @"CISepiaTone";
             break;
         case WKCFilterTypeLightNoir:
-            fileName = @"CIMinimumComponent";
+            self.fileName = @"CIMinimumComponent";
             break;
         case WKCFilterTypeBloom:
-            fileName = @"CIBloom";
+            self.fileName = @"CIBloom";
             break;
         case WKCFilterTypeHeightField:
-            fileName = @"CIHeightFieldFromMask";
+            self.fileName = @"CIHeightFieldFromMask";
             break;
         case WKCFilterTypeWeekLight:
-            fileName = @"CILinearToSRGBToneCurve";
+            self.fileName = @"CILinearToSRGBToneCurve";
             break;
         case WKCFilterTypeWeekPaiting:
-            fileName = @"CILineOverlay";
+            self.fileName = @"CILineOverlay";
             break;
         case WKCFilterTypeHatched:
-            fileName = @"CIHatchedScreen";
+            self.fileName = @"CIHatchedScreen";
             break;
         case WKCFilterTypeDot:
-            fileName = @"CIDotScreen";
+            self.fileName = @"CIDotScreen";
             break;
         case WKCFilterTypeSpotLight:
-            fileName = @"CISpotLight";
+            self.fileName = @"CISpotLight";
             break;
         case WKCFilterTypeSpotColor:
-            fileName = @"CISpotColor";
+            self.fileName = @"CISpotColor";
             break;
         case WKCFilterTypeVignette:
-            fileName = @"CIVignetteEffect";
+            self.fileName = @"CIVignetteEffect";
             break;
         case WKCFilterTypeZoomBlur:
-            fileName = @"CIZoomBlur";
+            self.fileName = @"CIZoomBlur";
             break;
         case WKCFilterTypeMotionBlur:
-            fileName = @"CIMotionBlur";
+            self.fileName = @"CIMotionBlur";
             break;
         case WKCFilterTypeDiscBlur:
-            fileName = @"CIDiscBlur";
+            self.fileName = @"CIDiscBlur";
             break;
         case WKCFilterTypeBoxBlur:
-            fileName = @"CIBoxBlur";
+            self.fileName = @"CIBoxBlur";
             break;
         case WKCFilterTypeFalseColor:
-            fileName = @"CIFalseColor";
+            self.fileName = @"CIFalseColor";
             break;
         case WKCFilterTypeEffectCircular:
-            fileName = @"CICircularScreen";
+            self.fileName = @"CICircularScreen";
             break;
         case WKCFilterTypeEffectRaidus:
-            fileName = @"CICircularWrap";
+            self.fileName = @"CICircularWrap";
             break;
         case WKCFilterTypeEffectPosterize:
-            fileName = @"CIColorPosterize";
+            self.fileName = @"CIColorPosterize";
             break;
         case WKCFilterTypeEffectLozenge:
-            fileName = @"CIGlassLozenge";
+            self.fileName = @"CIGlassLozenge";
             break;
         case WKCFilterTypeEffectHistogram:
-            fileName = @"CIHistogramDisplayFilter";
+            self.fileName = @"CIHistogramDisplayFilter";
             break;
         case WKCFilterTypeEffectStretched:
-            fileName = @"CINinePartStretched";
+            self.fileName = @"CINinePartStretched";
             break;
         case WKCFilterTypeEffectTiled:
-            fileName = @"CINinePartTiled";
+            self.fileName = @"CINinePartTiled";
             break;
         case WKCFilterTypeEffectStretchCrop:
-            fileName = @"CIStretchCrop";
+            self.fileName = @"CIStretchCrop";
             break;
         case WKCFilterTypeEffectToneCurve:
-            fileName = @"CIToneCurve";
+            self.fileName = @"CIToneCurve";
             break;
         case WKCFilterTypeEffectLinearToneCurve:
-           fileName = @"CISRGBToneCurveToLinear";
+           self.fileName = @"CISRGBToneCurveToLinear";
             break;
         case WKCFilterTypeEffectXRay:
-           fileName = @"CIXRay";
+           self.fileName = @"CIXRay";
             break;
         case WKCFilterTypeEffectThermal:
-            fileName = @"CIThermal";
+            self.fileName = @"CIThermal";
             break;
         case WKCFilterTypeEffectHalftone:
-            fileName = @"CICMYKHalftone";
+            self.fileName = @"CICMYKHalftone";
             break;
         case WKCFilterTypeEffectEdges:
-            fileName = @"CIEdges";
+            self.fileName = @"CIEdges";
             break;
         case WKCFilterTypeEffectComic:
-            fileName = @"CIComicEffect";
+            self.fileName = @"CIComicEffect";
             break;
         case WKCFilterTypeEffectMonochrome:
-            fileName = @"CIColorMonochrome";
+            self.fileName = @"CIColorMonochrome";
             break;
         case WKCFilterTypeEffectColorInvert:
-            fileName = @"CIColorInvert";
+            self.fileName = @"CIColorInvert";
             break;
         case WKCFilterTypeEffectPointillize:
-            fileName = @"CIPointillize";
+            self.fileName = @"CIPointillize";
             break;
         case WKCFilterTypeEffectPixellate:
-            fileName = @"CIPixellate";
+            self.fileName = @"CIPixellate";
             break;
         case WKCFilterTypeEffectHexagonalPixellate:
-            fileName = @"CIHexagonalPixellate";
+            self.fileName = @"CIHexagonalPixellate";
             break;
         case WKCFilterTypeEffectPerspectiveExtent:
-            fileName = @"CIPerspectiveTransformWithExtent";
+            self.fileName = @"CIPerspectiveTransformWithExtent";
             break;
         case WKCFilterTypeEffectPerspectiveTransform:
-            fileName = @"CIPerspectiveTransform";
+            self.fileName = @"CIPerspectiveTransform";
             break;
         case WKCFilterTypeEffectPerspectiveCorrection:
-            fileName = @"CIPerspectiveCorrection";
+            self.fileName = @"CIPerspectiveCorrection";
             break;
         case WKCFilterTypeEffectKaleidoscope:
-            fileName = @"CIKaleidoscope";
+            self.fileName = @"CIKaleidoscope";
             break;
         case WKCFilterTypeEffectCrystallize:
-            fileName = @"CICrystallize";
+            self.fileName = @"CICrystallize";
             break;
         case WKCFilterTypeDistortionTwirl:
-            fileName = @"CITwirlDistortion";
+            self.fileName = @"CITwirlDistortion";
             break;
         case WKCFilterTypeDistortionVortex:
-            fileName = @"CIVortexDistortion";
+            self.fileName = @"CIVortexDistortion";
             break;
         case WKCFilterTypeDistortionTorusLens:
-            fileName = @"CITorusLensDistortion";
+            self.fileName = @"CITorusLensDistortion";
             break;
         case WKCFilterTypeDistortionPinch:
-            fileName = @"CIPinchDistortion";
+            self.fileName = @"CIPinchDistortion";
             break;
         case WKCFilterTypeDistortionHole:
-            fileName = @"CIHoleDistortion";
+            self.fileName = @"CIHoleDistortion";
             break;
         case WKCFilterTypeDistortionBump:
-            fileName = @"CIBumpDistortion";
+            self.fileName = @"CIBumpDistortion";
             break;
         default:
             break;
     }
     
-    _tmpImage = [WKCFilterManager filterWithName:fileName originImage:self.image];
+   UIImage *cacheImage = [WKCCache imageForKey:self.fileName];
+    
+    if (cacheImage) {
+        _tmpImage = cacheImage;
+    }else {
+        
+        __weak typeof(self)WeakSelf = self;
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+           self.image = [WKCCache forceAnalyzeSourceImage:self.image];
+            [WKCFilterManager filterWithName:self.fileName originImage:self.image completationHandle:^(UIImage *image) {
+                if (image) {
+                WeakSelf.tmpImage = [WKCCache forceAnalyzeSourceImage:image];
+                [WKCCache cacheSourceImage:WeakSelf.tmpImage forKey:WeakSelf.fileName];
+                    [WeakSelf callBackEditing];
+                }
+            }];
+        });
+    }
+    
 }
 
 - (void)fireOn {
@@ -220,17 +238,20 @@
 }
 
 - (void)callBackEditing {
-    [self callBack];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterTool:editingImage:)]) {
+            [self.delegate filterTool:self editingImage:self.tmpImage];
+        }
+    });
 }
 
 -(void)callBackEdited {
-    [self callBack];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(filterTool:didFinishEditImage:)]) {
+            [self.delegate filterTool:self didFinishEditImage:self.tmpImage];
+        }
+    });
 }
 
-- (void)callBack {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(filterTool:didFinishEditImage:)]) {
-        [self.delegate filterTool:self didFinishEditImage:_tmpImage];
-    }
-}
 
 @end

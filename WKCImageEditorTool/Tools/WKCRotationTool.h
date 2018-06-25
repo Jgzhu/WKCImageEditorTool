@@ -62,7 +62,7 @@ typedef NS_ENUM(NSInteger,WKCImageRotationType) {
 - (void)fireOn;
 /**关闭*/
 - (void)fireOff;
-/**回调正在编辑*/
+/**回调正在编辑的*/
 - (void)callBackEditing;
 /**回调编辑完的*/
 - (void)callBackEdited;

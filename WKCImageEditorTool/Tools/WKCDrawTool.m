@@ -66,13 +66,23 @@
 
 - (void)callBackEdited {
     
-    UIImage *image = [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(BOOL isSuccess, NSError *error) {
-      
+    __weak typeof(self)WeakSelf = self;
+    
+    [WKCCaptureTool captureView:self.superview.superview isSave:NO completionHandle:^(UIImage *image, BOOL isSuccess, NSError *error) {
+        if (isSuccess) {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(drawTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate drawTool:self didFinishEditImage:image];
+            }
+        }else {
+            if (WeakSelf.delegate && [WeakSelf.delegate respondsToSelector:@selector(drawTool:didFinishEditImage:)]) {
+                [WeakSelf.delegate drawTool:self didFinishEditImage:nil];
+            }
+        }
+
+        [WeakSelf fireOff];
     }];
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(drawTool:didFinishEditImage:)]) {
-        [self.delegate drawTool:self didFinishEditImage:image];
-    }
+
 }
 
 - (void)cleanUp {
