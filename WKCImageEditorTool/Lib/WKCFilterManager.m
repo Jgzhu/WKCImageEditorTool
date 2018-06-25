@@ -83,5 +83,21 @@
     return newimage;
 }
 
++ (UIImage *)mosaicFilterWithOriginImage:(UIImage *)image {
+    
+    CIImage *ciImage = [[CIImage alloc] initWithImage:image];
+    CIFilter *filter = [CIFilter filterWithName:@"CIPixellate"];
+    [filter setValue:ciImage  forKey:kCIInputImageKey];
+    [filter setDefaults];
+    CIImage *outImage = [filter           valueForKey:kCIOutputImageKey];
+    CIContext *context = [CIContext contextWithOptions:nil];
+    CGImageRef cgImage = [context createCGImage:outImage fromRect:[outImage extent]];
+    UIImage *showImage = [UIImage imageWithCGImage:cgImage];
+    CGImageRelease(cgImage);
+    return showImage;
+    
+}
+
+
 
 @end
