@@ -24,6 +24,26 @@ editedImage:(UIImage *)edited;
 - (void)imageEditorTool:(WKCImageEditorTool *)tool
 cancelImage:(UIImage *)cancel;
 ```
+
+具体的各个工具属性设置,去设置各个tool属性.(最后的位置附各工具属性和方法列表).
+```
+/**滤镜工具*/
+@property (nonatomic, strong) WKCFilterTool * filterTool;
+/**旋转工具*/
+@property (nonatomic, strong) WKCRotationTool * rotationTool;
+/**画笔工具*/
+@property (nonatomic, strong) WKCDrawTool * drawTool;
+/**贴图工具*/
+@property (nonatomic, strong) WKCStickersTool * stickerTool;
+/**马赛克工具*/
+@property (nonatomic, strong) WKCMosaicTool * mosaicTool;
+/**文本工具*/
+@property (nonatomic, strong) WKCTextTool * textTool;
+/**亮度工具*/
+@property (nonatomic, strong) WKCBrightTool * brightTool;
+/**裁剪工具*/
+@property (nonatomic, strong) WKCClipTool * clipTool;
+```
 ## 滤镜
 1. 源图与滤镜后的图都会在子线程强制解析,解析后缓存,再在主线程回调.再次加载会加载缓存图片.
 2. 使用如下:
@@ -95,5 +115,71 @@ self.editorTool.filterTool.filterType = WKCFilterTypeInstant;
 
 ![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/花瓣.png).
 等等,其他效果见Demo.
+
+## 旋转
+
+1. 使用(用法都一样).
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image];
+_editorTool.editorType = WKCImageEditorToolTypeRotation;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+2. 事件触发.
+```
+[self.editorTool fire];
+self.editorTool.rotationTool.rotationType = WKCImageRotationTypeOrientationLeft;
+```
+3. 效果图
+
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/旋转.gif).
+
+## 画笔
+1. 使用
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image];
+_editorTool.editorType = WKCImageEditorToolTypeDraw;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+2. 开启
+ `[self.editorTool fire]; `
+3. 确认 
+` [self.editorTool confirm]; `
+4. 效果图
+
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/画笔.gif).
+
+## 贴图
+贴图与上边有些区别.贴图初始时需要设置贴图和删除键.其有另外的初始方法.(但仍包含上述方法的初始,各初始化是递进关系，并不是单一关系).
+
+1. 初始化
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image stickerImage:[UIImage imageNamed:@"toolBar_stickes_1"] deleteImage:[UIImage imageNamed:@"toolBar_stickes_delete"]];
+_editorTool.editorType = WKCImageEditorToolTypeSticker;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+2. 橡皮擦
+调用 ` [self.editorTool.drawTool eraser]; ` 开启橡皮擦模式.
+其他方法相同,之后不重复写了.
+
+3. 效果图
+
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/贴图.gif).
+
+
 
 
