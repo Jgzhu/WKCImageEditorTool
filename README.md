@@ -4,6 +4,8 @@
 
 图片编辑,滤镜、亮度调节、旋转、画笔、贴图、马赛克、文本、裁剪.
 
+` pod 'WKCImageEditorTool' `
+
 ` #import <WKCImageEditorTool/WKCImageEditorTool.h> `
 
 主体 WKCImageEditorTool 有三个代理回调.
@@ -34,12 +36,18 @@ _editorTool.delegate = self;
 }
 return _editorTool;
 }
+
+```
+添加到父视图(需要展示的图片imageView上).
+```
+[self.imageView addSubview:self.editorTool];
 ```
 设置类型为滤镜,在触发事件内,设置类型,开启使用即可
 ```
 self.editorTool.filterTool.filterType = WKCFilterTypeInstant;
 [self.editorTool fire];
 ```
+使用完成后,工具会自动关闭.某些模式下需要手动,调用`- (void)confirm;`去回调结果并关闭(例如画笔、图贴等,需要编辑完成再确认操作的).
 效果图:
 
 ![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/怀旧.png).
