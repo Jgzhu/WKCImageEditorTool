@@ -25,7 +25,7 @@ editedImage:(UIImage *)edited;
 cancelImage:(UIImage *)cancel;
 ```
 
-具体的各个工具属性设置,去设置各个tool属性.(最后的位置附各工具属性和方法列表).
+具体的各个工具属性设置,去设置各个tool属性.
 ```
 /**滤镜工具*/
 @property (nonatomic, strong) WKCFilterTool * filterTool;
@@ -213,4 +213,50 @@ return _editorTool;
 2. 效果图
 
 ![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/文本.gif).
+
+## 亮度、对比度、饱和度
+
+1. 使用
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image];
+_editorTool.editorType = WKCImageEditorToolTypeBright;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+```
+- (IBAction)valueChanged:(UISlider *)sender {
+NSLog(@"值是%f",sender.value);
+[self.editorTool.brightTool brightWithType:WKCBrightTypeLight value:sender.value];
+[self.editorTool fire];
+
+}
+```
+2. 效果图
+
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/亮度.gif).
+
+## 裁剪
+1. 使用
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image];
+_editorTool.editorType = WKCImageEditorToolTypeClip;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+2. 效果图
+
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/裁剪.gif).
+
+## 混合使用
+当将所有工具在一个界面组合成一个编辑工具时,每次确认时，默认会更新源图,无需再特意处理.s
+
+
 
