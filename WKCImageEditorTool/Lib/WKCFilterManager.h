@@ -32,13 +32,13 @@
 #pragma mark ----<色彩>---
 /**根据原图获得色彩调节滤镜*/
 + (CIFilter *)brightWithOriginImage:(UIImage *)image;
-/**改变亮度值*/
+/**改变亮度值 -1 -> 1*/
 + (UIImage *)brightFilter:(CIFilter *)filter
                     value:(CGFloat)value;
-/**改变饱和度值*/
+/**改变饱和度值 0 -> 2*/
 + (UIImage *)saturationFilter:(CIFilter *)filter
                         value:(CGFloat)value;
-/**改变对比度值*/
+/**改变对比度值 0 -> 4*/
 + (UIImage *)contrastFilter:(CIFilter *)filter
                       value:(CGFloat)value;
 

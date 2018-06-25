@@ -40,7 +40,6 @@ typedef NS_ENUM(NSInteger,WKCImageEditorToolType) {
 @protocol WKCImageEditorToolDelegate<NSObject>
 
 @optional
-
 /**
  *编辑中的图片 - 展示效果用(滤镜、旋转、亮度模式有效)
  */

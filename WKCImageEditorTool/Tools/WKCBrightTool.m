@@ -28,7 +28,6 @@
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor clearColor];
         self.image = image;
-        _tmpImage = image;
         self.hidden = YES;
     }
     return self;
@@ -45,27 +44,25 @@
 - (void)brightWithType:(WKCBrightType)type value:(CGFloat)value {
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        switch (type) {
-            case WKCBrightTypeLight:
-                self.image = [WKCCache forceAnalyzeSourceImage:self.image];
-                self.tmpImage = [WKCFilterManager brightFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
-                self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
-                break;
-            case WKCBrightTypeSaturation:
-                 self.image = [WKCCache forceAnalyzeSourceImage:self.image];
-                self.tmpImage = [WKCFilterManager saturationFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
-                 self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
-                break;
-            case WKCBrightTypeContrast:
-                self.image = [WKCCache forceAnalyzeSourceImage:self.image];
-                self.tmpImage = [WKCFilterManager contrastFilter:[WKCFilterManager brightWithOriginImage:self.image] value:value];
-                self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
-                break;
-            default:
-                break;
-        }
+        self.image = [WKCCache forceAnalyzeSourceImage:self.image];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            switch (type) {
+                case WKCBrightTypeLight:
+                    self.tmpImage = [WKCFilterManager brightFilter:self.filter value:value];
+                    break;
+                case WKCBrightTypeSaturation:
+                    self.tmpImage = [WKCFilterManager saturationFilter:self.filter value:value];
+                    break;
+                case WKCBrightTypeContrast:
+                    self.tmpImage = [WKCFilterManager contrastFilter:self.filter value:value];
+                    break;
+                default:
+                    break;
+            }
+        });
+        self.tmpImage = [WKCCache forceAnalyzeSourceImage:self.tmpImage];
     });
-
+    
     _tmpType = type;
     _tmpVaule = value;
     
@@ -96,4 +93,10 @@
     });
 }
 
+- (CIFilter *)filter {
+    if (!_filter) {
+        _filter = [WKCFilterManager brightWithOriginImage:self.image];
+    }
+    return _filter;
+}
 @end

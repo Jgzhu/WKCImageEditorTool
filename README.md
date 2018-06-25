@@ -180,6 +180,37 @@ return _editorTool;
 
 ![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/贴图.gif).
 
+## 马赛克
+1. 使用
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image];
+_editorTool.editorType = WKCImageEditorToolTypeMosaic;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+2. 效果图
 
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/马赛克.gif).
 
+## 文本
+文本也要个别的初始化方法.
+
+1. 使用
+```
+- (WKCImageEditorTool *)editorTool {
+if (!_editorTool) {
+_editorTool = [[WKCImageEditorTool alloc] initWithFrame:self.imageView.bounds sourceImage:self.imageView.image textDelete:[UIImage imageNamed:@"toolBar_stickes_delete"]];
+_editorTool.editorType = WKCImageEditorToolTypeText;
+_editorTool.delegate = self;
+}
+return _editorTool;
+}
+```
+2. 效果图
+
+![Alt text](https://github.com/WeiKunChao/WKCImageEditorTool/raw/master/screenShort/文本.gif).
 
